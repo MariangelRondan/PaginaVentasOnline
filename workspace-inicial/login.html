@@ -19,8 +19,24 @@
 <body>
   <main class="mt-5">
     <div class="container">
-      <div class="alert alert-danger text-center" role="alert">
-        <h4 class="alert-heading">Funcionalidad en desarrollo</h4>
+     
+      <!-- /*onsubmit={validation} NO PODRIA SER?*/ -->
+      <form id="login">
+        <label for="usuario">Usuario</label>
+        <input type="text" id="usuario" name="usuario" />
+        <p id="errorUsuario" class="error-message"></p> 
+      
+        <label for="contraseña">Contraseña</label>
+        <input type="password" id="contraseña" name="contraseña" />
+        <p id="errorContraseña" class="error-message"></p> 
+      
+        <button type="submit">Iniciar sesión</button>
+      </form>
+      
+
+
+
+
       </div>
     </div>
   </main>
