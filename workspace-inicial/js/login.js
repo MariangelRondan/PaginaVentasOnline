@@ -19,23 +19,23 @@ document.addEventListener("DOMContentLoaded", function () {
     errorUsuario.textContent = "";
     errorContraseña.textContent = "";
 
-    localStorage.setItem("usuario", usuario);
-
     if (!usuario) {
-      errorUsuario.textContent = "El usuario no debe estar vacío";
-    } else if (!regexEmail.test(usuario)) {
-      errorUsuario.textContent = "Usuario inválido";
+      return (errorUsuario.textContent = "El usuario no debe estar vacío");
+    }
+    if (!regexEmail.test(usuario)) {
+      return (errorUsuario.textContent = "Usuario inválido");
     }
 
     if (!contraseña) {
-      errorContraseña.textContent = "La contraseña no debe estar vacía";
-    } else if (contraseña.length < 8) {
-      errorContraseña.textContent =
-        "La contraseña debe tener al menos 8 caracteres";
+      return (errorContraseña.textContent =
+        "La contraseña no debe estar vacía");
+    }
+    if (contraseña.length < 8) {
+      return (errorContraseña.textContent =
+        "La contraseña debe tener al menos 8 caracteres");
     } else {
       //guardo en localStorage para generar authToken
-      const user = usuario;
-      localStorage.setItem("user", user);
+      localStorage.setItem("usuario", usuario);
       window.location.href = "index.html";
     }
   });

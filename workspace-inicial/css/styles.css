@@ -188,3 +188,14 @@ a.custom-card:hover {
 .checked {
   color: orange;
 }
+
+
+
+
+.opcionesUsuario ul{
+  background-color: #212529;
+  border: none;
+  padding: 0;
+ 
+}
+

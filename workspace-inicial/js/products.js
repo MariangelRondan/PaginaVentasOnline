@@ -1,73 +1,80 @@
-document.addEventListener('DOMContentLoaded', ()=>{
-//catID ya esta seteado en el localStorage en categories.js
+let originalData; // Variable para almacenar los datos originales
+let currentData; // Variable para mantener los datos actuales (filtrados o no)
 
-const catID = localStorage.getItem("catID");
+document.addEventListener("DOMContentLoaded", () => {
+  //catID ya esta seteado en el localStorage en categories.js
 
-if(catID){
+  const catID = localStorage.getItem("catID");
+
+  if (catID) {
     const productUrl = `https://japceibal.github.io/emercado-api/cats_products/${catID}.json`;
 
     fetch(productUrl)
-    .then(response => {
-        if(!response.ok){
-            throw new Error(`Error en la solicitud: ${response.status}`);
-        } return response.json();
-    })
-    
-    .then(data => {
-    if(data.products.length === 0) {
-        const container = document.getElementById('container'); //es un div
-        const encabezado = document.createElement(h2)
-        container.appendChild(encabezado)
-        encabezado.innerHTML() = "Lo siento, no hay contenido para mostrar."
-    } else {
-        data.products.forEach(product => {
-            mostrarCatalogo(product.image, product.name, product.description, product.cost, product.currency, product.soldCount )
-        });
-    }
-    }) 
+      .then((response) => {
+        if (!response.ok) {
+          throw new Error(`Error en la solicitud: ${response.status}`);
+        }
+        return response.json();
+      })
 
-.catch(error => {
-    console.log(error)
-})
+      .then((data) => {
+        originalData = data; // Almacenar los datos originales
+        currentData = { ...data }; // Crear una copia inicial
+        mostrarCatalogo(data);
+      })
+
+      .catch((error) => {
+        console.log(error);
+      });
+  }
+});
+
+// Función para mostrar los productos en el contenedor
+function mostrarCatalogo(data) {
+  const container = document.getElementById("containerProducts");
+  let htmlContentToAppend = "";
+
+  if (data.products.length === 0) {
+    htmlContentToAppend = `<h2 id="avisoNoProductos">No hay productos para mostrar</h2>`;
+  } else {
+    data.products.forEach((producto) => {
+      htmlContentToAppend += `
+          <div class="contProducto" onclick="setProductID(${producto.id})">
+            <img src="${producto.image}" class="imgProducto">
+            <h2 class="nombre">${producto.name}</h2>
+            <p class="precioProducto">${producto.currency} ${producto.cost}</p>
+            <p id="descripcion">${producto.description}</p>
+            <p>Vendidos: ${producto.soldCount}</p>
+          </div>
+        `;
+    });
+  }
+
+  container.innerHTML = htmlContentToAppend;
 }
 
+const ordenarMayorPrecio = () => {
+  currentData.products.sort((a, b) => b.cost - a.cost);
+  mostrarCatalogo(currentData);
+};
 
+const ordenarMenorPrecio = () => {
+  currentData.products.sort((a, b) => a.cost - b.cost);
+  mostrarCatalogo(currentData);
+};
 
-})
-//le agrego las propiedades que debo mostrar
-function mostrarCatalogo(imageURL, nombre, descripcion, costo, moneda, vendidos ){
-    //tengo que llamar al  div que englobe el catalogo
-    const container = document.getElementById('container')
-    // tengo que crear unimg para   "image": " 
-     //     ese img va a ser hijo del div contenedor
-    const image = document.createElement('img')
-    image.src = imageURL;
-    container.appendChild(image)
-     
-   
-//trngo que mostrar un div el texto del producto    
-const texto = document.createElement('div') 
-container.appendChild(texto)
-//trngo que mostrar un p con el nombre del producto
-const name = document.createElement('p')
-name.textContent = nombre;
-//ese p va a ser hijo de el div texto
-texto.appendChild(name);
+// Eventos para los botones de filtro
+document.addEventListener("DOMContentLoaded", () => {
+  const inputMayorPrecio = document.getElementById("mayorPrecio");
+  const inputMenorPrecio = document.getElementById("menorPrecio");
+  const inputDestacados = document.getElementById("destacados");
 
-const description = document.createElement('p')
-description.textContent = descripcion;
-texto.appendChild(description)
-const cost = document.createElement('p')
-cost.textContent = costo;
-texto.appendChild(cost)
+  const rangeFilterCount = document.getElementById("rangeFilterCount");
+  const clearRangeFilter = document.getElementById("clearRangeFilter");
 
-const  currency = document.createElement('p')
-currency.textContent = moneda;
-texto.appendChild(currency)
-
-const soldCount = document.createElement('p')
-soldCount.textContent = vendidos
-texto.appendChild(soldCount)
-
-
-}
+  inputMayorPrecio.addEventListener("click", ordenarMayorPrecio);
+  inputMenorPrecio.addEventListener("click", ordenarMenorPrecio);
+  //   cantVendidos.addEventListener("click", filtrarPorMasVendidos);
+  //   rangeFilterCount.addEventListener("click", filtrarPorRangoPrecio);
+  //   clearRangeFilter.addEventListener("click", limpiarFiltro);
+});
